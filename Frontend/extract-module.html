@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extract Module - Personalized Study Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    min-height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    border-radius: 0 20px 20px 0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.sidebar img { width: 100px; margin-bottom: 30px; }
+.sidebar a { text-decoration: none; color: #333; font-weight: 500; margin: 15px 0; display: flex; align-items: center; transition: 0.3s; }
+.sidebar a i { margin-right: 10px; }
+.sidebar a:hover { color: #2575fc; }
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* Extract form */
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+}
+
+.input-group input, .input-group textarea {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    transition: 0.3s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.input-group textarea {
+    padding: 12px 12px 12px 40px;
+    min-height: 120px;
+    resize: vertical;
+}
+
+.input-group input:focus, .input-group textarea:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2575fc;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #6a11cb;
+    transform: translateY(-3px);
+}
+
+button.secondary {
+    background-color: #ff416c;
+    margin-left: 10px;
+    width: auto;
+    padding: 12px 30px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Results section */
+.results-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    display: none;
+}
+
+.module-item {
+    background: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border-left: 4px solid #2575fc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.module-item h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.module-item p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; border-radius: 0 0 20px 20px; flex-direction: row; overflow-x: auto; padding: 10px; }
+    .sidebar a { margin: 0 15px; }
+    .main-content { padding: 20px; }
+    .button-group { flex-direction: column; }
+    button.secondary { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <img src="studyplanner.webp" alt="Logo" style="80px" margin="20px">
+    <a href="dashboard.html"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="profile.html"><i class="fa fa-user"></i> Profile</a>
+    <a href="upload.html"><i class="fa fa-upload"></i> Upload Syllabus</a>
+    <a href="studyplan.html"><i class="fa fa-book"></i> Study Plan</a>
+    <a href="quizzes.html"><i class="fa fa-question-circle"></i> Quizzes</a>
+    <a href="progress.html"><i class="fa fa-chart-line"></i> Progress</a>
+    <a href="index.html"><i class="fa fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <h2>Extract Modules from Syllabus</h2>
+    <p style="color: #fff; font-size:16px;">Upload your syllabus or paste text to automatically extract study modules.</p>
+    
+    <div class="container">
+        <form id="extractForm">
+            <div class="input-group">
+                <i class="fa fa-file-upload"></i>
+                <input type="file" id="syllabusFile" accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(this)">
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0; color: #666;">OR</div>
+            
+            <div class="input-group">
+                <i class="fa fa-edit"></i>
+                <textarea id="syllabusText" placeholder="Paste your syllabus content here..."></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit">
+                    <i class="fa fa-cogs"></i> Extract Modules & Generate Study Plan
+                </button>
+                <button type="button" class="secondary" onclick="window.location.href='upload.html'">
+                    <i class="fa fa-arrow-left"></i> Back to Upload
+                </button>
+            </div>
+        </form>
+        
+        <!-- File Content Display -->
+        <div id="fileContentSection" class="results-section" style="display: none;">
+            <h3>📄 File Content Preview</h3>
+            <div id="fileContent" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 10px 0;">
+                <!-- File content will be displayed here -->
+            </div>
+        </div>
+        
+        <div id="resultsSection" class="results-section">
+            <h3>📚 Extracted Modules</h3>
+            <div id="modulesList">
+                <!-- Extracted modules will appear here -->
+            </div>
+        </div>
+        
+        <!-- Weekly Study Plan Section -->
+        <div id="weeklyPlanSection" class="results-section" style="display: none;">
+            <h3>📅 Weekly Study Plan</h3>
+            <div id="weeklyPlanList">
+                <!-- Weekly study plan will appear here -->
+            </div>
+        </div>
+        
+        <!-- Quiz Generation Section -->
+        <div id="quizSection" class="results-section" style="display: none;">
+            <h3>❓ Generated Quizzes</h3>
+            <div id="quizList">
+                <!-- Generated quizzes will appear here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Global variables for data storage
+let uploadedFileContent = '';
+let extractedModules = [];
+let weeklyStudyPlan = [];
+let generatedQuizzes = [];
+
+// Handle file upload and display content
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const fileContentSection = document.getElementById("fileContentSection");
+    const fileContent = document.getElementById("fileContent");
+    
+    // Show file info
+    fileContent.innerHTML = `<p><strong>File:</strong> ${file.name}</p><p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p><p><strong>Type:</strong> ${file.type}</p>`;
+    
+    // Read file content based on type
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedFileContent = e.target.result;
+        
+        // Display content preview
+        if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+            fileContent.innerHTML += `<h4>Content Preview:</h4><pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${uploadedFileContent.substring(0, 1000)}${uploadedFileContent.length > 1000 ? '...' : ''}</pre>`;
+        } else {
+            fileContent.innerHTML += `<p><em>File uploaded successfully. Content will be processed during extraction.</em></p>`;
+        }
+        
+        fileContentSection.style.display = "block";
+    };
+    
+    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+        reader.readAsText(file);
+    } else {
+        reader.readAsDataURL(file);
+    }
+}
+
+// Form submission handler
+document.getElementById("extractForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById("syllabusFile");
+    const textInput = document.getElementById("syllabusText");
+    
+    if (fileInput.files.length === 0 && textInput.value.trim() === "") {
+        alert("Please upload a file or paste syllabus content.");
+        return;
+    }
+    
+    // Show loading
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+    submitBtn.disabled = true;
+    
+    try {
+        // Get content from file or text input
+        const content = fileInput.files.length > 0 ? uploadedFileContent : textInput.value;
+        
+        // Process the content
+        await processContent(content);
+        
+        // Generate all components
+        generateModules();
+        generateWeeklyStudyPlan();
+        generateQuizzes();
+        
+        // Save all data persistently
+        saveAllData();
+        
+        alert("✅ Processing complete! Modules, study plan, and quizzes generated successfully.");
+        
+    } catch (error) {
+        console.error('Processing error:', error);
+        alert("❌ Error processing content. Please try again.");
+    } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+// Process uploaded content
+async function processContent(content) {
+    // Simulate AI processing - in real implementation, this would call the backend
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Store the content
+    uploadedFileContent = content;
+}
+
+// Generate modules from content
+function generateModules() {
+    // Mock AI-generated modules based on content
+    extractedModules = [
+        { 
+            id: 1,
+            title: "Introduction to Mathematics", 
+            description: "Basic concepts and fundamentals of mathematical thinking", 
+            duration: "2 weeks",
+            topics: ["Numbers", "Operations", "Basic Algebra", "Problem Solving"],
+            difficulty: "Beginner"
+        },
+        { 
+            id: 2,
+            title: "Algebra and Equations", 
+            description: "Solving linear and quadratic equations with practical applications", 
+            duration: "3 weeks",
+            topics: ["Linear Equations", "Quadratic Equations", "Inequalities", "Word Problems"],
+            difficulty: "Intermediate"
+        },
+        { 
+            id: 3,
+            title: "Geometry Basics", 
+            description: "Shapes, angles, and measurements in 2D and 3D space", 
+            duration: "2 weeks",
+            topics: ["Points, Lines, Planes", "Angles", "Triangles", "Circles", "3D Shapes"],
+            difficulty: "Intermediate"
+        },
+        { 
+            id: 4,
+            title: "Statistics and Probability", 
+            description: "Data analysis and probability theory for real-world applications", 
+            duration: "2 weeks",
+            topics: ["Data Collection", "Mean, Median, Mode", "Probability", "Graphs and Charts"],
+            difficulty: "Advanced"
+        },
+        { 
+            id: 5,
+            title: "Calculus Fundamentals", 
+            description: "Limits, derivatives, and integrals with practical applications", 
+            duration: "4 weeks",
+            topics: ["Limits", "Derivatives", "Integrals", "Applications in Science"],
+            difficulty: "Advanced"
+        }
+    ];
+    
+    displayModules();
+}
+
+// Display extracted modules
+function displayModules() {
+    const modulesList = document.getElementById("modulesList");
+    const resultsSection = document.getElementById("resultsSection");
+    
+    modulesList.innerHTML = "";
+    
+    extractedModules.forEach((module, index) => {
+        const moduleElement = document.createElement("div");
+        moduleElement.className = "module-item";
+        moduleElement.innerHTML = `
+            <h4>${module.title}</h4>
+            <p>${module.description}</p>
+            <p><strong>Duration:</strong> ${module.duration} | <strong>Difficulty:</strong> ${module.difficulty}</p>
+            <div style="margin-top: 10px;">
+                <strong>Topics:</strong> ${module.topics.join(", ")}
+            </div>
+        `;
+        modulesList.appendChild(moduleElement);
+    });
+    
+    resultsSection.style.display = "block";
+}
+
+// Generate weekly study plan
+function generateWeeklyStudyPlan() {
+    const totalWeeks = 12; // Total study duration
+    weeklyStudyPlan = [];
+    
+    // Distribute modules across weeks
+    let currentWeek = 1;
+    let moduleIndex = 0;
+    
+    for (let week = 1; week <= totalWeeks; week++) {
+        const weekPlan = {
+            week: week,
+            title: `Week ${week}`,
+            modules: [],
+            studyHours: 0,
+            goals: []
+        };
+        
+        // Add modules for this week (2-3 modules per week)
+        const modulesThisWeek = Math.min(2, extractedModules.length - moduleIndex);
+        for (let i = 0; i < modulesThisWeek && moduleIndex < extractedModules.length; i++) {
+            const module = extractedModules[moduleIndex];
+            weekPlan.modules.push({
+                ...module,
+                studyDays: Math.ceil(parseInt(module.duration) * 3.5), // Convert weeks to days
+                dailyHours: 2
+            });
+            weekPlan.studyHours += parseInt(module.duration) * 3.5 * 2;
+            moduleIndex++;
+        }
+        
+        // Add weekly goals
+        weekPlan.goals = [
+            `Complete ${weekPlan.modules.length} module(s)`,
+            `Study for ${weekPlan.studyHours} hours`,
+            "Take practice quizzes",
+            "Review previous week's material"
+        ];
+        
+        weeklyStudyPlan.push(weekPlan);
+    }
+    
+    displayWeeklyStudyPlan();
+}
+
+// Display weekly study plan
+function displayWeeklyStudyPlan() {
+    const weeklyPlanList = document.getElementById("weeklyPlanList");
+    const weeklyPlanSection = document.getElementById("weeklyPlanSection");
+    
+    weeklyPlanList.innerHTML = "";
+    
+    weeklyStudyPlan.forEach(week => {
+        const weekElement = document.createElement("div");
+        weekElement.className = "module-item";
+        weekElement.innerHTML = `
+            <h4>${week.title}</h4>
+            <p><strong>Study Hours:</strong> ${week.studyHours} hours</p>
+            <div style="margin: 10px 0;">
+                <strong>Modules:</strong>
+                <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${week.modules.map(module => `<li>${module.title} (${module.duration})</li>`).join('')}
+                </ul>
+            </div>
+            <div>
+                <strong>Goals:</strong>
+                <ul style="margin: 5px 0; padding-left: 20px;">
+                    ${week.goals.map(goal => `<li>${goal}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+        weeklyPlanList.appendChild(weekElement);
+    });
+    
+    weeklyPlanSection.style.display = "block";
+}
+
+// Generate quizzes based on content
+function generateQuizzes() {
+    generatedQuizzes = [];
+    
+    extractedModules.forEach((module, moduleIndex) => {
+        const quiz = {
+            id: `quiz_${moduleIndex + 1}`,
+            title: `${module.title} - Quiz`,
+            moduleId: module.id,
+            questions: [],
+            duration: 30,
+            difficulty: module.difficulty
+        };
+        
+        // Generate 5 questions per module
+        for (let i = 1; i <= 5; i++) {
+            const question = {
+                id: `q${i}`,
+                question: `What is the main concept covered in ${module.title}?`,
+                options: [
+                    module.topics[0] || "Option A",
+                    module.topics[1] || "Option B", 
+                    module.topics[2] || "Option C",
+                    module.topics[3] || "Option D"
+                ],
+                correct: 0,
+                explanation: `This question tests your understanding of ${module.title} concepts.`
+            };
+            quiz.questions.push(question);
+        }
+        
+        generatedQuizzes.push(quiz);
+    });
+    
+    displayQuizzes();
+}
+
+// Display generated quizzes
+function displayQuizzes() {
+    const quizList = document.getElementById("quizList");
+    const quizSection = document.getElementById("quizSection");
+    
+    quizList.innerHTML = "";
+    
+    generatedQuizzes.forEach(quiz => {
+        const quizElement = document.createElement("div");
+        quizElement.className = "module-item";
+        quizElement.innerHTML = `
+            <h4>${quiz.title}</h4>
+            <p><strong>Questions:</strong> ${quiz.questions.length} | <strong>Duration:</strong> ${quiz.duration} minutes | <strong>Difficulty:</strong> ${quiz.difficulty}</p>
+            <button onclick="startQuiz('${quiz.id}')" style="background: #2575fc; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                <i class="fa fa-play"></i> Start Quiz
+            </button>
+        `;
+        quizList.appendChild(quizElement);
+    });
+    
+    quizSection.style.display = "block";
+}
+
+// Start quiz function
+function startQuiz(quizId) {
+    const quiz = generatedQuizzes.find(q => q.id === quizId);
+    if (quiz) {
+        // Store current quiz for taking
+        localStorage.setItem('currentQuiz', JSON.stringify(quiz));
+        alert(`Starting ${quiz.title}! Redirecting to quiz page...`);
+        // In a real implementation, you would redirect to a quiz-taking page
+        window.location.href = 'quizzes.html';
+    }
+}
+
+// Save all data persistently
+function saveAllData() {
+    const userId = localStorage.getItem('user_id') || 'demo_user';
+    const timestamp = new Date().toISOString();
+    
+    // Save extracted modules
+    localStorage.setItem('extractedModules', JSON.stringify(extractedModules));
+    
+    // Save weekly study plan
+    localStorage.setItem('weeklyStudyPlan', JSON.stringify(weeklyStudyPlan));
+    
+    // Save generated quizzes
+    localStorage.setItem('generatedQuizzes', JSON.stringify(generatedQuizzes));
+    
+    // Save file content
+    localStorage.setItem('uploadedFileContent', uploadedFileContent);
+    
+    // Save user session data
+    const sessionData = {
+        userId: userId,
+        lastUpdated: timestamp,
+        modulesCount: extractedModules.length,
+        quizzesCount: generatedQuizzes.length,
+        studyWeeks: weeklyStudyPlan.length
+    };
+    
+    localStorage.setItem('userSessionData', JSON.stringify(sessionData));
+    
+    // Send to backend for persistent storage
+    saveToBackend();
+}
+
+// Save data to backend
+async function saveToBackend() {
+    try {
+        const userId = localStorage.getItem('user_id') || 'demo_user';
+        
+        // Save study plan
+        if (extractedModules.length > 0) {
+            await fetch('http://localhost:5000/api/study-plans', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    title: "AI Generated Study Plan",
+                    description: "Study plan generated from uploaded content",
+                    modules: extractedModules
+                })
+            });
+        }
+        
+        // Save quizzes
+        if (generatedQuizzes.length > 0) {
+            for (const quiz of generatedQuizzes) {
+                await fetch('http://localhost:5000/api/quizzes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        title: quiz.title,
+                        subject: "Generated from Upload",
+                        questions: quiz.questions,
+                        duration: quiz.duration
+                    })
+                });
+            }
+        }
+        
+        console.log('Data saved to backend successfully');
+    } catch (error) {
+        console.error('Error saving to backend:', error);
+    }
+}
+
+// Load previous data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadPreviousData();
+});
+
+// Load previous data
+function loadPreviousData() {
+    const sessionData = JSON.parse(localStorage.getItem('userSessionData') || '{}');
+    
+    if (sessionData.userId && sessionData.lastUpdated) {
+        // Load previous modules
+        const savedModules = JSON.parse(localStorage.getItem('extractedModules') || '[]');
+        if (savedModules.length > 0) {
+            extractedModules = savedModules;
+            displayModules();
+        }
+        
+        // Load previous weekly plan
+        const savedWeeklyPlan = JSON.parse(localStorage.getItem('weeklyStudyPlan') || '[]');
+        if (savedWeeklyPlan.length > 0) {
+            weeklyStudyPlan = savedWeeklyPlan;
+            displayWeeklyStudyPlan();
+        }
+        
+        // Load previous quizzes
+        const savedQuizzes = JSON.parse(localStorage.getItem('generatedQuizzes') || '[]');
+        if (savedQuizzes.length > 0) {
+            generatedQuizzes = savedQuizzes;
+            displayQuizzes();
+        }
+        
+        console.log('Previous data loaded successfully');
+    }
+}
+</script>
+
+</body>
+</html>

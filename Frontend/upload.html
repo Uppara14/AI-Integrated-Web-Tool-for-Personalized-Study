@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Syllabus - Personalized Study Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    min-height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    border-radius: 0 20px 20px 0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.sidebar img {
+    width: 100px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+}
+
+.sidebar a:hover {
+    color: #2575fc;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Upload form card */
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2575fc;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #6a11cb;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        border-radius: 0 0 20px 20px;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 10px;
+    }
+    .sidebar a {
+        margin: 0 15px;
+    }
+    .main-content {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <img src="studyplanner.webp" alt="Logo" style="80px" margin="20px">
+    <a href="dashboard.html"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="profile.html"><i class="fa fa-user"></i> Profile</a>
+    <a href="upload.html"><i class="fa fa-upload"></i> Upload Syllabus</a>
+    <a href="studyplan.html"><i class="fa fa-book"></i> Study Plan</a>
+    <a href="quizzes.html"><i class="fa fa-question-circle"></i> Quizzes</a>
+    <a href="progress.html"><i class="fa fa-chart-line"></i> Progress</a>
+    <a href="index.html"><i class="fa fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <h2>Upload Your Syllabus</h2>
+    <div class="container">
+        <form id="uploadForm">
+            <div class="input-group">
+                <i class="fa fa-file-upload"></i>
+                <input type="file" id="syllabusFile" accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(this)" required>
+            </div>
+            <button type="submit">Upload & Process</button>
+        </form>
+        
+        <!-- File Content Display -->
+        <div id="fileContentSection" style="margin-top: 20px; display: none;">
+            <h3 style="color: #333; margin-bottom: 15px;">📄 Uploaded File Content</h3>
+            <div id="fileContent" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 10px 0; border: 1px solid #ddd;">
+                <!-- File content will be displayed here -->
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <button onclick="window.location.href='extract-module.html'" style="background-color: #ff416c; width: auto; padding: 12px 30px; margin-right: 10px;">
+                <i class="fa fa-cogs"></i> Extract Module
+            </button>
+            <button onclick="processUploadedFile()" id="processBtn" style="background-color: #28a745; width: auto; padding: 12px 30px; display: none;">
+                <i class="fa fa-magic"></i> Generate Study Plan & Quizzes
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+// Global variable to store uploaded file content
+let uploadedFileContent = '';
+
+// Handle file upload and display content
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const fileContentSection = document.getElementById("fileContentSection");
+    const fileContent = document.getElementById("fileContent");
+    const processBtn = document.getElementById("processBtn");
+    
+    // Show file info
+    fileContent.innerHTML = `
+        <p><strong>File:</strong> ${file.name}</p>
+        <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+        <p><strong>Type:</strong> ${file.type}</p>
+    `;
+    
+    // Read file content based on type
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedFileContent = e.target.result;
+        
+        // Display content preview
+        if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+            fileContent.innerHTML += `
+                <h4>Content Preview:</h4>
+                <pre style="white-space: pre-wrap; font-family: Arial, sans-serif; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+${uploadedFileContent.substring(0, 1500)}${uploadedFileContent.length > 1500 ? '...' : ''}
+                </pre>
+            `;
+        } else {
+            fileContent.innerHTML += `<p><em>File uploaded successfully. Content will be processed when you click "Generate Study Plan & Quizzes".</em></p>`;
+        }
+        
+        fileContentSection.style.display = "block";
+        processBtn.style.display = "inline-block";
+    };
+    
+    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+        reader.readAsText(file);
+    } else {
+        reader.readAsDataURL(file);
+        fileContent.innerHTML += `<p><em>File uploaded successfully. Content will be processed when you click "Generate Study Plan & Quizzes".</em></p>`;
+        fileContentSection.style.display = "block";
+        processBtn.style.display = "inline-block";
+    }
+}
+
+// Process uploaded file and generate study plan
+async function processUploadedFile() {
+    if (!uploadedFileContent) {
+        alert("Please upload a file first.");
+        return;
+    }
+    
+    const processBtn = document.getElementById("processBtn");
+    const originalText = processBtn.innerHTML;
+    processBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+    processBtn.disabled = true;
+    
+    try {
+        console.log('Starting file processing...');
+        console.log('File content length:', uploadedFileContent.length);
+        
+        // Generate modules from content
+        console.log('Generating modules...');
+        const modules = await generateModulesFromContent(uploadedFileContent);
+        console.log('Generated modules:', modules.length);
+        
+        // Generate weekly study plan (Sunday-Saturday)
+        console.log('Generating weekly plan...');
+        const weeklyPlan = generateWeeklyStudyPlan(modules);
+        console.log('Generated weekly plan:', weeklyPlan.length);
+        
+        // Generate quizzes
+        console.log('Generating quizzes...');
+        const quizzes = generateQuizzesFromModules(modules);
+        console.log('Generated quizzes:', quizzes.length);
+        
+        // Save all data
+        console.log('Saving data...');
+        await saveAllGeneratedData(modules, weeklyPlan, quizzes);
+        console.log('Data saved successfully');
+        
+        alert("✅ Study plan and quizzes generated successfully! Check the Study Plan and Quizzes sections.");
+        
+        // Redirect to dashboard to show the generated content
+        window.location.href = 'dashboard.html';
+        
+    } catch (error) {
+        console.error('Processing error:', error);
+        console.error('Error details:', error.message);
+        alert(`❌ Error processing file: ${error.message}. Please try again.`);
+    } finally {
+        processBtn.innerHTML = originalText;
+        processBtn.disabled = false;
+    }
+}
+
+// Generate modules from content based on uploaded syllabus
+async function generateModulesFromContent(content) {
+    // Simulate AI processing
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Analyze content and generate modules based on syllabus
+    const contentLower = content.toLowerCase();
+    const modules = [];
+    
+    // Extract key topics from syllabus content
+    const extractedTopics = extractTopicsFromSyllabus(content);
+    
+    // Generate modules based on extracted topics
+    extractedTopics.forEach((topic, index) => {
+        modules.push({
+            id: index + 1,
+            title: topic.title,
+            description: topic.description,
+            duration: topic.duration,
+            topics: topic.subtopics,
+            difficulty: topic.difficulty,
+            study_hours: topic.study_hours,
+            source: "Generated from uploaded syllabus"
+        });
+    });
+    
+    // If no topics extracted, create modules from content analysis
+    if (modules.length === 0) {
+        modules.push(...createModulesFromContentAnalysis(content));
+    }
+    
+    return modules;
+}
+
+// Extract topics from syllabus content
+function extractTopicsFromSyllabus(content) {
+    try {
+        const topics = [];
+        const lines = content.split('\n');
+        let currentTopic = null;
+        let topicIndex = 1;
+        
+        // Look for common syllabus patterns
+        const topicPatterns = [
+            /chapter\s+\d+/i,
+            /unit\s+\d+/i,
+            /module\s+\d+/i,
+            /lesson\s+\d+/i,
+            /^\d+\./,
+            /^[A-Z][^a-z]*$/,
+            /^[IVX]+\./
+        ];
+        
+        lines.forEach((line, index) => {
+            const trimmedLine = line.trim();
+            
+            // Check if line matches topic patterns
+            const isTopic = topicPatterns.some(pattern => pattern.test(trimmedLine));
+            
+            if (isTopic && trimmedLine.length > 3) {
+                // Save previous topic if exists
+                if (currentTopic) {
+                    topics.push(currentTopic);
+                }
+                
+                // Start new topic
+                currentTopic = {
+                    title: trimmedLine,
+                    description: `Study material for ${trimmedLine}`,
+                    duration: "1 week",
+                    subtopics: [],
+                    difficulty: "Intermediate",
+                    study_hours: 15
+                };
+            } else if (currentTopic && trimmedLine.length > 0) {
+                // Add subtopic
+                currentTopic.subtopics.push(trimmedLine);
+            }
+        });
+        
+        // Add the last topic
+        if (currentTopic) {
+            topics.push(currentTopic);
+        }
+        
+        // If no structured topics found, create from content analysis
+        if (topics.length === 0) {
+            return createModulesFromContentAnalysis(content);
+        }
+        
+        return topics.slice(0, 8); // Limit to 8 modules
+    } catch (error) {
+        console.error('Error extracting topics from syllabus:', error);
+        return createModulesFromContentAnalysis(content);
+    }
+}
+
+// Create modules from content analysis
+function createModulesFromContentAnalysis(content) {
+    try {
+        const contentLower = content.toLowerCase();
+        const modules = [];
+        
+        // Math-related modules
+        if (anyWordInContent(contentLower, ['math', 'mathematics', 'algebra', 'calculus', 'geometry', 'statistics', 'trigonometry'])) {
+            modules.push({
+                id: 1,
+                title: "Mathematics Fundamentals",
+                description: "Core mathematical concepts and problem-solving techniques from your syllabus",
+                duration: "1 week",
+                topics: ["Basic Operations", "Algebra", "Geometry", "Problem Solving"],
+                difficulty: "Beginner",
+                study_hours: 20,
+                source: "Generated from uploaded syllabus"
+            });
+            
+            modules.push({
+                id: 2,
+                title: "Advanced Mathematics",
+                description: "Complex mathematical theories and applications from your syllabus",
+                duration: "1 week",
+                topics: ["Calculus", "Statistics", "Probability", "Advanced Algebra"],
+                difficulty: "Advanced",
+                study_hours: 25,
+                source: "Generated from uploaded syllabus"
+            });
+        }
+    
+    // Science-related modules
+    if (anyWordInContent(contentLower, ['science', 'physics', 'chemistry', 'biology', 'laboratory', 'experiment'])) {
+        modules.push({
+            id: 3,
+            title: "Scientific Method and Research",
+            description: "Understanding scientific inquiry and research methodologies from your syllabus",
+            duration: "1 week",
+            topics: ["Hypothesis", "Experimentation", "Data Analysis", "Conclusion"],
+            difficulty: "Intermediate",
+            study_hours: 20,
+            source: "Generated from uploaded syllabus"
+        });
+        
+        modules.push({
+            id: 4,
+            title: "Laboratory Techniques",
+            description: "Hands-on laboratory skills and safety protocols from your syllabus",
+            duration: "1 week",
+            topics: ["Safety", "Equipment", "Measurements", "Data Recording"],
+            difficulty: "Intermediate",
+            study_hours: 15,
+            source: "Generated from uploaded syllabus"
+        });
+    }
+    
+    // Programming-related modules
+    if (anyWordInContent(contentLower, ['programming', 'coding', 'software', 'computer', 'algorithm', 'data structure'])) {
+        modules.push({
+            id: 5,
+            title: "Programming Fundamentals",
+            description: "Introduction to programming concepts and logic from your syllabus",
+            duration: "1 week",
+            topics: ["Variables", "Loops", "Functions", "Data Structures"],
+            difficulty: "Beginner",
+            study_hours: 25,
+            source: "Generated from uploaded syllabus"
+        });
+        
+        modules.push({
+            id: 6,
+            title: "Software Development",
+            description: "Building applications and software projects from your syllabus",
+            duration: "1 week",
+            topics: ["Project Planning", "Coding", "Testing", "Debugging"],
+            difficulty: "Intermediate",
+            study_hours: 30,
+            source: "Generated from uploaded syllabus"
+        });
+    }
+    
+    // Language-related modules
+    if (anyWordInContent(contentLower, ['english', 'language', 'literature', 'writing', 'grammar', 'composition'])) {
+        modules.push({
+            id: 7,
+            title: "Language and Literature",
+            description: "Language skills and literary analysis from your syllabus",
+            duration: "1 week",
+            topics: ["Grammar", "Writing", "Reading", "Literature Analysis"],
+            difficulty: "Intermediate",
+            study_hours: 20,
+            source: "Generated from uploaded syllabus"
+        });
+    }
+    
+    // History-related modules
+    if (anyWordInContent(contentLower, ['history', 'social', 'politics', 'culture', 'civilization', 'ancient'])) {
+        modules.push({
+            id: 8,
+            title: "Historical Studies",
+            description: "Historical events and social studies from your syllabus",
+            duration: "1 week",
+            topics: ["Historical Events", "Social Studies", "Cultural Analysis", "Timeline"],
+            difficulty: "Intermediate",
+            study_hours: 18,
+            source: "Generated from uploaded syllabus"
+        });
+    }
+    
+        // If no specific subjects detected, create general modules from syllabus
+        if (modules.length === 0) {
+            modules.push(
+                {
+                    id: 1,
+                    title: "Introduction to Course Material",
+                    description: "Overview and introduction to the main concepts from your syllabus",
+                    duration: "1 week",
+                    topics: ["Course Overview", "Learning Objectives", "Assessment Methods"],
+                    difficulty: "Beginner",
+                    study_hours: 15,
+                    source: "Generated from uploaded syllabus"
+                },
+                {
+                    id: 2,
+                    title: "Core Concepts",
+                    description: "Understanding the fundamental principles from your syllabus",
+                    duration: "1 week",
+                    topics: ["Key Concepts", "Theories", "Practical Applications"],
+                    difficulty: "Intermediate",
+                    study_hours: 20,
+                    source: "Generated from uploaded syllabus"
+                },
+                {
+                    id: 3,
+                    title: "Advanced Topics",
+                    description: "Deep dive into complex and advanced material from your syllabus",
+                    duration: "1 week",
+                    topics: ["Advanced Concepts", "Case Studies", "Problem Solving"],
+                    difficulty: "Advanced",
+                    study_hours: 25,
+                    source: "Generated from uploaded syllabus"
+                }
+            );
+        }
+        
+        return modules;
+    } catch (error) {
+        console.error('Error creating modules from content analysis:', error);
+        // Return default modules if analysis fails
+        return [
+            {
+                id: 1,
+                title: "General Study Material",
+                description: "Study material from your uploaded syllabus",
+                duration: "1 week",
+                topics: ["Overview", "Key Concepts", "Applications"],
+                difficulty: "Beginner",
+                study_hours: 15,
+                source: "Generated from uploaded syllabus"
+            }
+        ];
+    }
+}
+
+// Generate weekly study plan (Sunday-Saturday) - 1 week only
+function generateWeeklyStudyPlan(modules) {
+    try {
+        const weeklyPlan = [];
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        // Ensure modules is an array
+        const safeModules = Array.isArray(modules) ? modules : [];
+        
+        // Generate only 1 week of study plan
+        const weekPlan = {
+            week: 1,
+            title: `Week 1 (Sunday-Saturday)`,
+            days: {},
+            total_study_hours: 0,
+            modules: safeModules, // All modules in one week
+            goals: []
+        };
+        
+        // Distribute modules across the 7 days
+        const modulesPerDay = Math.ceil(Math.max(1, safeModules.length) / 7);
+        let moduleIndex = 0;
+        
+        // Create daily schedule for each day of the week
+        daysOfWeek.forEach((day, dayIndex) => {
+            const dailyModules = safeModules.slice(moduleIndex, moduleIndex + modulesPerDay);
+            const dailyHours = dailyModules.reduce((total, module) => total + (module.study_hours || 10), 0);
+            
+            weekPlan.days[day] = {
+                day: day,
+                study_hours: Math.max(1, dailyModules.length > 0 ? Math.floor(dailyHours / dailyModules.length) : 2),
+                activities: [
+                    `Study ${dailyModules.length > 0 ? dailyModules.map(m => m.title).join(', ') : 'Course Material'} (${Math.max(1, dailyModules.length > 0 ? Math.floor(dailyHours / dailyModules.length) : 2)} hours)`,
+                    "Review previous day's material",
+                    "Take practice quiz",
+                    "Complete assignments"
+                ],
+                modules: dailyModules,
+                time_slots: [
+                    "9:00 AM - 11:00 AM: Morning Study Session",
+                    "2:00 PM - 4:00 PM: Afternoon Review",
+                    "7:00 PM - 8:00 PM: Evening Practice"
+                ]
+            };
+            weekPlan.total_study_hours += Math.max(1, dailyModules.length > 0 ? Math.floor(dailyHours / dailyModules.length) : 2);
+            moduleIndex += modulesPerDay;
+        });
+        
+        // Add weekly goals
+        weekPlan.goals = [
+            `Complete all ${safeModules.length} module(s) this week`,
+            `Study for ${weekPlan.total_study_hours} hours total`,
+            "Take practice quizzes for each module",
+            "Review and consolidate learning daily",
+            "Complete all assignments on time"
+        ];
+        
+        weeklyPlan.push(weekPlan);
+        
+        return weeklyPlan;
+    } catch (error) {
+        console.error('Error generating weekly study plan:', error);
+        // Return default weekly plan if generation fails
+        return [{
+            week: 1,
+            title: "Week 1 (Sunday-Saturday)",
+            days: {
+                'Sunday': { day: 'Sunday', study_hours: 2, activities: ['Study Course Material'] },
+                'Monday': { day: 'Monday', study_hours: 3, activities: ['Study Course Material'] },
+                'Tuesday': { day: 'Tuesday', study_hours: 2, activities: ['Review Material'] },
+                'Wednesday': { day: 'Wednesday', study_hours: 3, activities: ['Practice Problems'] },
+                'Thursday': { day: 'Thursday', study_hours: 2, activities: ['Take Quiz'] },
+                'Friday': { day: 'Friday', study_hours: 2, activities: ['Review Week'] },
+                'Saturday': { day: 'Saturday', study_hours: 1, activities: ['Free Study'] }
+            },
+            total_study_hours: 15,
+            modules: [],
+            goals: ['Complete course material', 'Study 15 hours', 'Take quizzes']
+        }];
+    }
+}
+
+// Generate quizzes from modules based on uploaded syllabus
+function generateQuizzesFromModules(modules) {
+    try {
+        const quizzes = [];
+        
+        // Ensure modules is an array
+        const safeModules = Array.isArray(modules) ? modules : [];
+        
+        safeModules.forEach((module, index) => {
+            const quiz = {
+                id: `quiz_${module.id || index + 1}`,
+                title: `${module.title || 'Course Material'} - Quiz (From Syllabus)`,
+                moduleId: module.id || index + 1,
+                questions: [],
+                duration: 30,
+                difficulty: module.difficulty || 'Beginner',
+                source: "Generated from uploaded syllabus",
+                created_at: new Date().toISOString()
+            };
+            
+            // Generate 5 questions per module based on syllabus content
+            for (let i = 1; i <= 5; i++) {
+                const question = generateQuestionFromModule(module, i);
+                quiz.questions.push(question);
+            }
+            
+            quizzes.push(quiz);
+        });
+        
+        return quizzes;
+    } catch (error) {
+        console.error('Error generating quizzes from modules:', error);
+        // Return default quiz if generation fails
+        return [{
+            id: 'quiz_default',
+            title: 'General Quiz (From Syllabus)',
+            moduleId: 1,
+            questions: [
+                {
+                    id: 'q1',
+                    question: 'What is the main focus of this course material?',
+                    options: ['Learning new concepts', 'Practical applications', 'Theoretical understanding', 'All of the above'],
+                    correct: 3,
+                    explanation: 'This course covers all aspects of learning.'
+                }
+            ],
+            duration: 30,
+            difficulty: 'Beginner',
+            source: 'Generated from uploaded syllabus',
+            created_at: new Date().toISOString()
+        }];
+    }
+}
+
+// Generate specific questions based on module content from syllabus
+function generateQuestionFromModule(module, questionNumber) {
+    try {
+        // Ensure module has required properties
+        const safeModule = {
+            title: module.title || 'Course Material',
+            topics: Array.isArray(module.topics) ? module.topics : ['Basic Concepts', 'Advanced Topics', 'Practical Applications', 'Theoretical Framework'],
+            difficulty: module.difficulty || 'Beginner',
+            study_hours: module.study_hours || 15,
+            description: module.description || 'Study material from your syllabus'
+        };
+        
+        const questionTemplates = [
+            {
+                question: `What is the main focus of ${safeModule.title}?`,
+                options: [
+                    safeModule.topics[0] || "Basic concepts",
+                    safeModule.topics[1] || "Advanced topics", 
+                    safeModule.topics[2] || "Practical applications",
+                    safeModule.topics[3] || "Theoretical framework"
+                ],
+                correct: 0,
+                explanation: `This question tests your understanding of the main focus of ${safeModule.title} as outlined in your syllabus.`
+            },
+            {
+                question: `Which of the following is covered in ${safeModule.title}?`,
+                options: [
+                    safeModule.topics[0] || "Fundamental principles",
+                    safeModule.topics[1] || "Advanced techniques",
+                    safeModule.topics[2] || "Practical exercises",
+                    "None of the above"
+                ],
+                correct: 0,
+                explanation: `${safeModule.topics[0] || "Fundamental principles"} is a key component of ${safeModule.title} according to your syllabus.`
+            },
+            {
+                question: `What is the difficulty level of ${safeModule.title}?`,
+                options: [
+                    safeModule.difficulty,
+                    "Beginner",
+                    "Advanced", 
+                    "Expert"
+                ],
+                correct: 0,
+                explanation: `According to your syllabus, ${safeModule.title} is rated as ${safeModule.difficulty} level.`
+            },
+            {
+                question: `How long should you spend studying ${safeModule.title}?`,
+                options: [
+                    `${safeModule.study_hours} hours`,
+                    "10 hours",
+                    "30 hours",
+                    "50 hours"
+                ],
+                correct: 0,
+                explanation: `Your syllabus recommends ${safeModule.study_hours} hours of study for ${safeModule.title}.`
+            },
+            {
+                question: `What is the primary learning objective of ${safeModule.title}?`,
+                options: [
+                    safeModule.description,
+                    "To pass the exam",
+                    "To memorize facts",
+                    "To complete assignments"
+                ],
+                correct: 0,
+                explanation: `The primary objective of ${safeModule.title} is: ${safeModule.description}`
+            }
+        ];
+        
+        return questionTemplates[questionNumber - 1] || questionTemplates[0];
+    } catch (error) {
+        console.error('Error generating question from module:', error);
+        // Return default question if generation fails
+        return {
+            question: 'What is the main focus of this course material?',
+            options: ['Learning new concepts', 'Practical applications', 'Theoretical understanding', 'All of the above'],
+            correct: 3,
+            explanation: 'This course covers all aspects of learning.'
+        };
+    }
+}
+
+// Save all generated data
+async function saveAllGeneratedData(modules, weeklyPlan, quizzes) {
+    const userId = localStorage.getItem('user_id') || 'demo_user';
+    const timestamp = new Date().toISOString();
+    
+    // Save to localStorage
+    localStorage.setItem('extractedModules', JSON.stringify(modules));
+    localStorage.setItem('weeklyStudyPlan', JSON.stringify(weeklyPlan));
+    localStorage.setItem('generatedQuizzes', JSON.stringify(quizzes));
+    localStorage.setItem('uploadedFileContent', uploadedFileContent);
+    
+    // Save user session data
+    const sessionData = {
+        userId: userId,
+        lastUpdated: timestamp,
+        modulesCount: modules.length,
+        quizzesCount: quizzes.length,
+        studyWeeks: weeklyPlan.length,
+        hasUploadedFile: true
+    };
+    
+    localStorage.setItem('userSessionData', JSON.stringify(sessionData));
+    
+    // Save to backend
+    try {
+        // Save study plan
+        await fetch('http://localhost:5000/api/study-plans', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: userId,
+                title: "AI Generated Study Plan from Upload",
+                description: "Study plan generated from uploaded syllabus file",
+                modules: modules
+            })
+        });
+        
+        // Save quizzes
+        for (const quiz of quizzes) {
+            await fetch('http://localhost:5000/api/quizzes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    title: quiz.title,
+                    subject: "Generated from Upload",
+                    questions: quiz.questions,
+                    duration: quiz.duration
+                })
+            });
+        }
+        
+        // Save weekly plan
+        await fetch('http://localhost:5000/api/save-user-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: userId,
+                modules: modules,
+                weekly_plan: weeklyPlan,
+                quizzes: quizzes,
+                file_content: uploadedFileContent
+            })
+        });
+        
+        console.log('All data saved successfully');
+    } catch (error) {
+        console.error('Error saving to backend:', error);
+    }
+}
+
+// Helper function
+function anyWordInContent(content, words) {
+    return words.some(word => content.includes(word));
+}
+
+// Load previous data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadPreviousUploadData();
+});
+
+// Load previous upload data
+function loadPreviousUploadData() {
+    const sessionData = JSON.parse(localStorage.getItem('userSessionData') || '{}');
+    
+    if (sessionData.hasUploadedFile) {
+        const savedContent = localStorage.getItem('uploadedFileContent');
+        if (savedContent) {
+            uploadedFileContent = savedContent;
+            
+            // Show previous file content
+            const fileContentSection = document.getElementById("fileContentSection");
+            const fileContent = document.getElementById("fileContent");
+            const processBtn = document.getElementById("processBtn");
+            
+            fileContent.innerHTML = `
+                <p><strong>Previous Upload:</strong> File content loaded from previous session</p>
+                <h4>Content Preview:</h4>
+                <pre style="white-space: pre-wrap; font-family: Arial, sans-serif; background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+${savedContent.substring(0, 1500)}${savedContent.length > 1500 ? '...' : ''}
+                </pre>
+            `;
+            
+            fileContentSection.style.display = "block";
+            processBtn.style.display = "inline-block";
+        }
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Setup - Personalized Study Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    min-height: 100vh;
+}
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+.sidebar { width:220px; background-color:#fff; border-radius:0 20px 20px 0; padding:30px 20px; display:flex; flex-direction:column; box-shadow:0 0 20px rgba(0,0,0,0.2); }
+.sidebar img { width:100px; margin-bottom:30px; }
+.sidebar a { text-decoration:none; color:#333; font-weight:500; margin:15px 0; display:flex; align-items:center; transition:0.3s; }
+.sidebar a i { margin-right:10px; }
+.sidebar a:hover { color:#2575fc; }
+
+.main-content { flex:1; padding:40px; display:flex; flex-direction:column; }
+.main-content h2 { color:#fff; margin-bottom:20px; }
+
+.container { background-color:#fff; padding:30px; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.2); width:100%; max-width:500px; margin-top:20px; display:flex; flex-direction:column; gap:15px; }
+
+.input-group { position:relative; display:flex; align-items:center; gap:10px; }
+.input-group i { color:#555; }
+.input-group input { flex:1; padding:10px 12px; border-radius:10px; border:1px solid #ccc; outline:none; font-size:16px; transition:0.3s; }
+.input-group input:focus { border-color:#2575fc; box-shadow:0 0 8px rgba(37,117,252,0.5); }
+
+button { padding:12px; border:none; border-radius:10px; background-color:#2575fc; color:#fff; font-weight:600; font-size:16px; cursor:pointer; transition:0.3s; margin-top:10px; }
+button:hover { background-color:#6a11cb; transform:translateY(-3px); }
+
+#profileDisplay { margin-top:20px; }
+#profileInfo { background:#f8f9fa; padding:20px; border-radius:10px; border-left:4px solid #28a745; }
+
+label { font-weight:600; margin-bottom:5px; display:block; }
+
+@media (max-width:768px){
+    body{ flex-direction:column; }
+    .sidebar{ width:100%; border-radius:0 0 20px 20px; flex-direction:row; overflow-x:auto; padding:10px; }
+    .sidebar a{ margin:0 15px; }
+    .main-content{ padding:20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <img src="studyplanner.webp" alt="Logo">
+    <a href="dashboard.html"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="profile.html"><i class="fa fa-user"></i> Profile</a>
+    <a href="upload.html"><i class="fa fa-upload"></i> Upload Syllabus</a>
+    <a href="studyplan.html"><i class="fa fa-book"></i> Study Plan</a>
+    <a href="quizzes.html"><i class="fa fa-question-circle"></i> Quizzes</a>
+    <a href="progress.html"><i class="fa fa-chart-line"></i> Progress</a>
+    <a href="index.html"><i class="fa fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <h2>Setup Your Profile</h2>
+    <div class="container">
+        <form id="profileForm">
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input type="text" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fa fa-book"></i>
+                <input type="text" id="subject" placeholder="Subject" required>
+            </div>
+            <div class="input-group">
+                <i class="fa fa-graduation-cap"></i>
+                <input type="text" id="grade" placeholder="Grade/Level" required>
+            </div>
+
+            <!-- Start Date -->
+            <div class="input-group">
+                <i class="fa fa-calendar"></i>
+                <input type="date" id="startDate" required>
+                <label for="startDate" style="margin-left:10px;">Start Date</label>
+            </div>
+            <!-- End Date -->
+            <div class="input-group">
+                <i class="fa fa-calendar"></i>
+                <input type="date" id="endDate" required>
+                <label for="endDate" style="margin-left:10px;">End Date</label>
+            </div>
+
+            <button type="submit">Save Profile</button>
+        </form>
+
+        <!-- Profile Display -->
+        <div id="profileDisplay">
+            <h3 style="color: #333; margin-bottom: 15px;">📋 Your Profile</h3>
+            <div id="profileInfo"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function formatDateDDMMYYYY(dateString){
+    const d = new Date(dateString);
+    const day = String(d.getDate()).padStart(2,'0');
+    const month = String(d.getMonth()+1).padStart(2,'0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+document.getElementById("profileForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const profileData = {
+        name: document.getElementById('name').value,
+        subject: document.getElementById('subject').value,
+        grade: document.getElementById('grade').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        savedAt: new Date().toISOString()
+    };
+
+    if(new Date(profileData.startDate) > new Date(profileData.endDate)){
+        alert("End date must be after start date!");
+        return;
+    }
+
+    localStorage.setItem('userProfile', JSON.stringify(profileData));
+    displayProfile(profileData);
+    alert('Profile saved successfully!');
+});
+
+function displayProfile(profileData){
+    const profileInfo = document.getElementById('profileInfo');
+    profileInfo.innerHTML = `
+        <strong>👤 Name:</strong> ${profileData.name}<br>
+        <strong>📚 Subject:</strong> ${profileData.subject}<br>
+        <strong>🎓 Grade/Level:</strong> ${profileData.grade}<br>
+        <strong>📅 Study Period:</strong> ${formatDateDDMMYYYY(profileData.startDate)} - ${formatDateDDMMYYYY(profileData.endDate)}<br>
+        <strong>💾 Last Updated:</strong> ${new Date(profileData.savedAt).toLocaleString()}
+    `;
+}
+
+// Load profile on page load
+document.addEventListener('DOMContentLoaded', function(){
+    const savedProfile = localStorage.getItem('userProfile');
+    if(savedProfile){
+        const profileData = JSON.parse(savedProfile);
+        document.getElementById('name').value = profileData.name;
+        document.getElementById('subject').value = profileData.subject;
+        document.getElementById('grade').value = profileData.grade;
+        document.getElementById('startDate').value = profileData.startDate;
+        document.getElementById('endDate').value = profileData.endDate;
+        displayProfile(profileData);
+    }
+});
+</script>
+</body>
+</html>

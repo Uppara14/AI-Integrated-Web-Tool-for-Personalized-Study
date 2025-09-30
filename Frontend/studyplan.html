@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1-Month Study Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    min-height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    border-radius: 0 20px 20px 0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+.sidebar img { width: 100px; margin-bottom: 30px; }
+.sidebar a { text-decoration: none; color: #333; font-weight: 500; margin: 15px 0; display: flex; align-items: center; transition: 0.3s; }
+.sidebar a i { margin-right: 10px; }
+.sidebar a:hover { color: #2575fc; }
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* Study plan card */
+#plansContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.plan-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.plan-card h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.day-module {
+    font-size: 14px;
+    margin: 5px 0;
+    padding: 5px 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Regenerate button */
+#regenerateBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-weight: 600;
+    background: #2575fc;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: fit-content;
+}
+#regenerateBtn:hover { background: #1a5ed8; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; border-radius: 0 0 20px 20px; flex-direction: row; overflow-x: auto; padding: 10px; }
+    .sidebar a { margin: 0 15px; }
+    .main-content { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <img src="studyplanner.webp" alt="Logo">
+    <a href="dashboard.html"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="profile.html"><i class="fa fa-user"></i> Profile</a>
+    <a href="upload.html"><i class="fa fa-upload"></i> Upload Syllabus</a>
+    <a href="studyplan.html"><i class="fa fa-book"></i> Study Plan</a>
+    <a href="quizzes.html"><i class="fa fa-question-circle"></i> Quizzes</a>
+    <a href="progress.html"><i class="fa fa-chart-line"></i> Progress</a>
+    <a href="#" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <h2>1-Month Study Plan</h2>
+    <button id="regenerateBtn">Regenerate 1-Month Plan</button>
+    <div id="plansContainer">
+        <!-- Weekly study plan will render here -->
+    </div>
+</div>
+
+<script>
+// Logout
+function logout(){
+    localStorage.removeItem('user_id');
+    window.location.href='index.html';
+}
+
+// Generate weekly plan
+function generateWeeklyPlan(){
+    const modules = JSON.parse(localStorage.getItem("extractedModules")) || [];
+    if(modules.length===0){ 
+        alert("No modules found. Upload syllabus and extract modules first."); 
+        return [];
+    }
+
+    const weeks = 4;
+    const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const weeklyPlan = [];
+    let moduleIndex = 0;
+
+    for(let w=1; w<=weeks; w++){
+        const weekObj = { title: `Week ${w}`, days:{} };
+        for(let d of days){
+            const module = modules[moduleIndex % modules.length];
+            weekObj.days[d] = { activities: [module.title] }; // No study_hours
+            moduleIndex++;
+        }
+        weeklyPlan.push(weekObj);
+    }
+
+    localStorage.setItem("weeklyStudyPlan", JSON.stringify(weeklyPlan));
+    return weeklyPlan;
+}
+
+// Render weekly plan
+function renderPlans(){
+    const plansContainer = document.getElementById("plansContainer");
+    plansContainer.innerHTML = "";
+
+    let weeklyPlan = JSON.parse(localStorage.getItem("weeklyStudyPlan")) || [];
+
+    // If no plan, generate automatically
+    if(weeklyPlan.length === 0){
+        weeklyPlan = generateWeeklyPlan();
+    }
+
+    weeklyPlan.forEach(week => {
+        const card = document.createElement("div");
+        card.className = "plan-card";
+        card.innerHTML = `
+            <h3>📅 ${week.title}</h3>
+            <div>
+                ${Object.entries(week.days).map(([day, dayPlan]) => `
+                    <div class="day-module"><strong>${day}:</strong> ${dayPlan.activities.join(", ")}</div>
+                `).join('')}
+            </div>
+        `;
+        plansContainer.appendChild(card);
+    });
+}
+
+// Button to regenerate plan
+document.getElementById("regenerateBtn").addEventListener("click", () => {
+    generateWeeklyPlan();
+    renderPlans();
+});
+
+// Initial render
+renderPlans();
+</script>
+
+</body>
+</html>

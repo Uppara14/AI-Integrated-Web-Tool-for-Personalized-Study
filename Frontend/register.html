@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - Personalized Study Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* Background animation */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Card */
+.container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    width: 350px;
+    text-align: center;
+}
+h2 {
+    margin-bottom: 25px;
+    color: #333;
+    font-weight: 600;
+}
+.input-group {
+    margin-bottom: 20px;
+}
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2575fc;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #6a11cb;
+}
+p {
+    margin-top: 15px;
+    font-size: 14px;
+}
+p a {
+    color: #2575fc;
+    text-decoration: none;
+    font-weight: 600;
+}
+p a:hover {
+    color: #6a11cb;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Create Account</h2>
+    <form id="registerForm">
+        <div class="input-group">
+            <input type="text" name="name" placeholder="Full Name" required>
+        </div>
+        <div class="input-group">
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="input-group">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="index.html">Login here</a></p>
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const name = e.target.name.value.trim();
+    const email = e.target.email.value.trim();
+    const password = e.target.password.value.trim();
+
+    if(!name || !email || !password){
+        alert("Please fill in all fields!");
+        return;
+    }
+
+    // Save to localStorage
+    localStorage.setItem("user_name", name);
+    localStorage.setItem("user_email", email);
+    localStorage.setItem("user_password", password);
+
+    alert("Account created successfully! Please login now.");
+    window.location.href = "index.html";
+});
+</script>
+</body>
+</html>

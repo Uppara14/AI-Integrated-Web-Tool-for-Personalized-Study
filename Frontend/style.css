@@ -1,0 +1,11 @@
+.plan-card {
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.plan-card:hover { transform: translateY(-5px); box-shadow: 0 20px 35px rgba(0,0,0,0.3); }
+.plan-card h3 { margin: 0 0 10px 0; color: #333; }
+.plan-card p { color: #555; font-size: 14px; }

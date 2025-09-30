@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quizzes - Personalized Study Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    min-height: 100vh;
+}
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    border-radius: 0 20px 20px 0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+.sidebar img { width: 100px; margin-bottom: 30px; }
+.sidebar a { text-decoration: none; color: #333; font-weight: 500; margin: 15px 0; display: flex; align-items: center; transition: 0.3s; }
+.sidebar a i { margin-right: 10px; }
+.sidebar a:hover { color: #2575fc; }
+.main-content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+.main-content h2 { color: #fff; margin-bottom: 20px; font-size: 28px; }
+#quizzesContainer {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.quiz-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+.quiz-card h3 { margin: 0 0 10px 0; color: #333; }
+.quiz-card p { color: #555; font-size: 14px; margin: 5px 0; }
+.quiz-card button {
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.quiz-card button:hover {
+    opacity: 0.9;
+}
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; border-radius: 0 0 20px 20px; flex-direction: row; overflow-x: auto; padding: 10px; }
+    .sidebar a { margin: 0 15px; }
+    .main-content { padding: 20px; }
+    #quizzesContainer { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <img src="studyplanner.webp" alt="Logo">
+    <a href="dashboard.html"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="profile.html"><i class="fa fa-user"></i> Profile</a>
+    <a href="upload.html"><i class="fa fa-upload"></i> Upload Syllabus</a>
+    <a href="studyplan.html"><i class="fa fa-book"></i> Study Plan</a>
+    <a href="quizzes.html"><i class="fa fa-question-circle"></i> Quizzes</a>
+    <a href="progress.html"><i class="fa fa-chart-line"></i> Progress</a>
+    <a href="#" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <h2>Quizzes</h2>
+    <p style="color:#fff;font-size:16px;">Test your knowledge with interactive quizzes.</p>
+    <div id="quizzesContainer"></div>
+</div>
+
+<!-- Load script.js first -->
+<script src="script.js"></script>
+
+<script>
+function renderQuizzes() {
+    const quizzesContainer = document.getElementById("quizzesContainer");
+    quizzesContainer.innerHTML = "";
+    const quizzes = JSON.parse(localStorage.getItem("generatedQuizzes") || "[]");
+
+    if (quizzes.length === 0) {
+        quizzesContainer.innerHTML = `<p style="color:#fff;">No quizzes available. Upload syllabus to generate quizzes.</p>`;
+        return;
+    }
+
+    quizzes.forEach(q => {
+        const card = document.createElement("div");
+        card.className = "quiz-card";
+        card.innerHTML = `
+            <h3>${q.title}</h3>
+            <p>Questions: ${q.questions.length}</p>
+            <button class="start-quiz-btn" data-id="${q.id}">Start Quiz</button>
+        `;
+        quizzesContainer.appendChild(card);
+    });
+
+    // Add click events AFTER script.js has loaded
+    document.querySelectorAll('.start-quiz-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const quizId = btn.getAttribute('data-id');
+            startQuiz(quizId); // now this will work
+        });
+    });
+}
+
+// Logout
+function logout() {
+    localStorage.removeItem('user_id');
+    window.location.href = 'index.html';
+}
+
+// Render quizzes on load
+window.addEventListener('DOMContentLoaded', renderQuizzes);
+</script>
+
+</body>
+</html>
