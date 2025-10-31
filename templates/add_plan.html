@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Topic to Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Add Topic to Planner</h1>
+    <a href="{{ url_for('planner') }}">Back to Planner</a> | 
+    <a href="{{ url_for('home') }}">Home</a>
+
+    <form method="POST">
+        <label for="topic">Topic:</label><br>
+        <input type="text" name="topic" id="topic" required><br><br>
+
+        <label for="scheduled_date">Scheduled Date:</label><br>
+        <input type="date" name="scheduled_date" id="scheduled_date" required><br><br>
+
+        <button type="submit">Add to Planner</button>
+    </form>
+</body>
+</html>
