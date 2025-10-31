@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome {% if current_user.is_authenticated %}{{ current_user.username }}{% endif %}</h1>
+{% if current_user.is_authenticated %}  
+   <nav>      
+       <a href="{{ url_for('profile') }}" class="btn btn-primary">Go to Profile</a>      
+       <a href="{{ url_for('planner') }}" class="btn btn-secondary">Go to Planner</a>       
+       <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>    
+  </nav>
+{% else %}
+    <nav>
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+        <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+    </nav>
+{% endif %}
+{% endblock %}
