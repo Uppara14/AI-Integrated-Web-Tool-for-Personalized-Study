@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+               {% if messages %}
+                  {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Profile Form Card -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add New Profile</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Title</label>
+                                <input type="text" name="title" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Subject</label>
+                                <input type="text" name="subject" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Grade</label>
+                                <input type="text" name="grade" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="start_date" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">End Date</label>
+                                <input type="date" name="end_date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Syllabus</label>
+                            <input type="file" name="syllabus" class="form-control" accept=".txt,.pdf,.docx">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Save Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Saved Profiles -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Your Saved Profiles</h4>
+                </div>
+                <div class="card-body">
+                    {% if profiles %}
+                        {% for profile in profiles %}
+                            <div class="card mb-3 p-3 border-primary">
+                                <p><strong>Title:</strong> {{ profile.title }}</p>
+                                <p><strong>Subject:</strong> {{ profile.subject }}</p>
+                                <p><strong>Grade:</strong> {{ profile.grade }}</p>
+                                <p><strong>Start Date:</strong> {{ profile.start_date }}</p>
+                                <p><strong>End Date:</strong> {{ profile.end_date }}</p>
+                                {% if profile.topics %}
+                                    <p><strong>Extracted Topics:</strong> {{ profile.topics }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No profiles saved yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Planner Form Card -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Add Planner Entry</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Topic</label>
+                                <input type="text" name="planner_topic" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Planned Date</label>
+                                <input type="date" name="planner_date" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Planner Entry</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Planner Entries -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Your Planner Entries</h4>
+                </div>
+                <div class="card-body">
+                    {% if current_user.planners %}
+                        {% for planner in current_user.planners %}
+                            <div class="card mb-2 p-2 border-secondary">
+                                <p><strong>Topic:</strong> {{ planner.topic }}</p>
+                                <p><strong>Planned Date:</strong> {{ planner.scheduled_date }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No planner entries yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
